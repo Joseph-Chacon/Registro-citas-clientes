@@ -19,5 +19,10 @@ ese filtro es obligatorio en el servidor, no en el navegador.
 
 ## Próxima migración
 
-La siguiente migración creará los datos iniciales de una empresa y conectará
-esta estructura con las rutas de registro, inicio de sesión y reservas.
+La migración `0001_impedir_solapamientos_de_citas.sql` protege el recurso y el
+intervalo de cada cita activa. Una inserción o modificación que se cruce con
+otra cita pendiente o confirmada se rechaza dentro de D1.
+
+Para activar estas migraciones en producción, el sitio debe usar un backend
+con la vinculación D1 `db_citas`. El sitio actual aún es estático: la siguiente
+etapa técnica es migrarlo a ese backend y aplicar estas migraciones allí.

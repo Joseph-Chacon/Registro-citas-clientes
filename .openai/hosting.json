@@ -1,4 +1,6 @@
 {
   "project_id": "appgprj_6ad626a58cf08191a1f5b7ece1731350",
-  "static": { "directory": "dist" }
+  "static": { "directory": "dist" },
+  "d1": "db_citas",
+  "r2": null
 }
