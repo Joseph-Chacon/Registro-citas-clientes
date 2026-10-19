@@ -21,7 +21,7 @@
 - [x] Solicitud de nombre y WhatsApp.
 - [x] Pantalla de confirmación visual.
 - [x] Horarios ocupados mostrados y deshabilitados en la interfaz de ejemplo.
-- [ ] Disponibilidad calculada desde horarios reales del comercio.
+- [x] Disponibilidad calculada desde el horario configurado del comercio, la duración del servicio y las citas locales existentes.
 - [ ] Prevención real de doble reserva cuando dos clientes reservan a la vez.
 - [ ] Guardar la cita permanentemente y verla desde otro dispositivo.
 - [ ] Enlace público único por empresa, por ejemplo: /studio-lila.
