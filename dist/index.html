@@ -26,8 +26,11 @@ body{background:#ebe8e2;font-family:Arial,Helvetica,sans-serif}.app{max-width:62
 /* La ruta /reservar/:identificador selecciona el negocio público. */
 const coincidenciaReserva = location.pathname.match(/^\/reservar\/([a-z0-9-]{3,60})$/);
 const identificadorPublico = coincidenciaReserva ? coincidenciaReserva[1] : '';
-const tokenInvitacionRegistro = new URLSearchParams(location.hash.split('?')[1] || '').get('token') || '';
-const tokenRegistroInicial = new URLSearchParams(location.hash.split('?')[1] || '').get('inicio') || '';
+const esRutaRegistro = location.pathname === '/registro' || location.pathname === '/configuracion-inicial';
+const parametrosRegistro = new URLSearchParams(location.search || location.hash.split('?')[1] || '');
+const esConfiguracionInicial = location.pathname === '/configuracion-inicial' || parametrosRegistro.has('inicio');
+const tokenInvitacionRegistro = esConfiguracionInicial ? '' : (parametrosRegistro.get('token') || '');
+const tokenRegistroInicial = esConfiguracionInicial ? (parametrosRegistro.get('token') || parametrosRegistro.get('inicio') || '') : '';
 const fetchOriginal = window.fetch.bind(window);
 window.fetch = (recurso, opciones) => {
   const url = typeof recurso === 'string' ? recurso : recurso.url;
@@ -91,7 +94,7 @@ nSettings.onclick=()=>{window.showSettings();cargarServiciosGestion()};
 const sincronizarDiasVisibles=()=>{[...dates.querySelectorAll('.booking-day')].forEach(b=>{let d=Number(b.textContent),semana=new Date(bookingCal.year,bookingCal.month,d).getDay(),cerrado=!diasAtencion.has(semana);b.disabled=cerrado;b.classList.toggle('closed',cerrado)})};
 new MutationObserver(sincronizarDiasVisibles).observe(dates,{childList:true,subtree:true});
 // Las rutas privadas no dependen de un negocio público de demostración.
-if (!location.hash.startsWith('#admin')) cargarCatalogo();
+if (!location.hash.startsWith('#admin') && !esRutaRegistro) cargarCatalogo();
 </script>
 <script>
 if(location.hash==='#panel') window.showAdmin();
@@ -327,7 +330,7 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
       boton.textContent = 'Generando…';
       try {
         const respuesta = await api('/api/plataforma/invitaciones', { method: 'POST', body: JSON.stringify({ dias_validez: 7 }) });
-        const enlace = `${location.origin}/#admin?token=${encodeURIComponent(respuesta.token)}`;
+        const enlace = `${location.origin}/registro?token=${encodeURIComponent(respuesta.token)}`;
         document.getElementById('enlaceInvitacion').value = enlace;
         document.getElementById('resultadoInvitacion').classList.remove('hide');
         document.getElementById('avisoInvitacion').textContent = 'Compártelo solo con el manager. Tras completar el registro, dejará de funcionar.';
@@ -349,6 +352,6 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
     await abrirConfiguracionAnterior();
     try { await mostrarGestionInvitaciones(); } catch (error) { if (error.message !== 'Sesión no válida o vencida.') toast(error.message); }
   };
-  if (location.hash.startsWith('#admin')) window.showLogin();
+  if (location.hash.startsWith('#admin') || esRutaRegistro) window.showLogin();
 })();
 </script></body></html>

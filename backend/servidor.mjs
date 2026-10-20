@@ -60,7 +60,8 @@ const servidor = http.createServer(async (req, res) => {
     // La aplicación pública es una SPA. También entregamos su HTML al abrir un
     // enlace compartido directamente (o al recargarlo) en Render.
     const reservaPublica = ruta.match(/^\/reservar\/([a-z0-9-]{3,60})$/);
-    if (req.method === 'GET' && (ruta === '/' || ruta === '/index.html' || reservaPublica)) {
+    const registroPrivado = ruta === '/registro' || ruta === '/configuracion-inicial';
+    if (req.method === 'GET' && (ruta === '/' || ruta === '/index.html' || reservaPublica || registroPrivado)) {
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
       return res.end(await readFile(new URL('../dist/index.html', import.meta.url)));
     }
