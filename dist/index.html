@@ -27,6 +27,7 @@ body{background:#ebe8e2;font-family:Arial,Helvetica,sans-serif}.app{max-width:62
 const coincidenciaReserva = location.pathname.match(/^\/reservar\/([a-z0-9-]{3,60})$/);
 const identificadorPublico = coincidenciaReserva ? coincidenciaReserva[1] : 'studio-lila';
 const tokenInvitacionRegistro = new URLSearchParams(location.hash.split('?')[1] || '').get('token') || '';
+const tokenRegistroInicial = new URLSearchParams(location.hash.split('?')[1] || '').get('inicio') || '';
 const fetchOriginal = window.fetch.bind(window);
 window.fetch = (recurso, opciones) => {
   const url = typeof recurso === 'string' ? recurso : recurso.url;
@@ -243,7 +244,7 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
   registro.innerHTML = `
     <p class="eyebrow">Primer acceso</p>
     <h2 style="margin:4px 0 14px">Crea tu negocio</h2>
-    <p class="muted" style="margin:0 0 16px">Crea el usuario propietario y el enlace público de reservas.</p>
+    <p class="muted" id="descripcionRegistro" style="margin:0 0 16px">Crea el usuario propietario y el enlace público de reservas.</p>
     <div class="field"><label for="registroNombre">Tu nombre</label><input id="registroNombre" autocomplete="name" placeholder="Ej. Ana Rodríguez"></div>
     <div class="field"><label for="registroCorreo">Correo</label><input id="registroCorreo" type="email" autocomplete="email" placeholder="tu@negocio.com"></div>
     <div class="field"><label for="registroEmpresa">Nombre del negocio</label><input id="registroEmpresa" placeholder="Ej. Salón Aurora"></div>
@@ -265,6 +266,10 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
     abrirRegistro.classList.add('hide');
     registro.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+  if (tokenRegistroInicial) {
+    abrirRegistro.textContent = 'Configurar mi cuenta de administrador';
+    document.getElementById('descripcionRegistro').textContent = 'Este enlace privado crea la primera cuenta administradora de la plataforma.';
+  }
 
   const mostrarError = texto => {
     const mensaje = document.getElementById('mensajeRegistro');
@@ -282,8 +287,12 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
     boton.disabled = true;
     boton.textContent = 'Creando…';
     try {
-      if (!tokenInvitacionRegistro) throw new Error('Este registro requiere una invitación personal de un solo uso.');
-      await api('/api/registro', { method: 'POST', body: JSON.stringify({ nombre, correo, empresa, identificador_publico, contrasena, token_invitacion: tokenInvitacionRegistro }) });
+      if (!tokenInvitacionRegistro && !tokenRegistroInicial) throw new Error('Este registro requiere una invitación personal de un solo uso.');
+      const rutaRegistro = tokenRegistroInicial ? '/api/plataforma/registro-inicial' : '/api/registro';
+      const datosRegistro = tokenRegistroInicial
+        ? { nombre, correo, empresa, identificador_publico, contrasena, token_inicial: tokenRegistroInicial }
+        : { nombre, correo, empresa, identificador_publico, contrasena, token_invitacion: tokenInvitacionRegistro };
+      await api(rutaRegistro, { method: 'POST', body: JSON.stringify(datosRegistro) });
       const accesoCorreo = document.querySelector('#login input[type="email"]');
       const accesoContrasena = document.querySelector('#login input[type="password"]');
       accesoCorreo.value = correo;
