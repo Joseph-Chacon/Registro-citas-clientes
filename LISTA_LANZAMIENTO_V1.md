@@ -16,14 +16,15 @@
 
 - [x] Página pública de reservas sin botones administrativos.
 - [x] Catálogo de servicios con precio y duración.
+- [x] Activar o inactivar servicios desde el panel, conservando el historial de citas.
 - [x] Selección de fecha en calendario mensual.
 - [x] Selección de horario.
 - [x] Solicitud de nombre y WhatsApp.
 - [x] Pantalla de confirmación visual.
 - [x] Horarios ocupados mostrados y deshabilitados en la interfaz de ejemplo.
 - [x] Disponibilidad calculada desde el horario configurado del comercio, la duración del servicio y las citas locales existentes.
-- [ ] Prevención real de doble reserva cuando dos clientes reservan a la vez.
-- [ ] Guardar la cita permanentemente y verla desde otro dispositivo.
+- [x] Prevención de doble reserva conectada: la reserva pública usa PostgreSQL y el disparador rechaza horarios solapados.
+- [~] Almacenamiento permanente disponible en PostgreSQL; falta conectar la reserva y el panel para verlo desde otro dispositivo.
 - [ ] Enlace público único por empresa, por ejemplo: /studio-lila.
 
 ## Panel del comercio
@@ -32,12 +33,12 @@
 - [x] Agenda mensual de demostración.
 - [x] Configuración de nombre, ubicación y servicios.
 - [x] Agregar servicios desde celular en el prototipo.
-- [~] Pantalla de acceso de administrador; todavía no valida credenciales.
-- [ ] Registro real de empresa, usuario y contraseña.
-- [ ] Inicio y cierre de sesión reales.
+- [x] API local de registro e inicio de sesión conectada a PostgreSQL.
+- [~] Registro transaccional de empresa, usuario propietario y contraseña implementado en la API local; falta el formulario completo de alta de comercios.
+- [x] Inicio de sesión real conectado a la interfaz local; el cierre de sesión queda pendiente en la interfaz.
 - [ ] Agenda con citas reales de la empresa autenticada.
-- [ ] Editar/cancelar citas desde el panel.
-- [ ] Horarios laborales y días bloqueados configurables.
+- [~] API local permite listar, reprogramar y cancelar citas dentro de la empresa de la sesión; listar y cancelar ya están conectados al panel local, falta reprogramar visualmente.
+- [~] Horarios laborales y días de atención configurables desde el panel y guardados en PostgreSQL; falta la pantalla para bloquear fechas puntuales (feriados/vacaciones).
 
 ## Datos, seguridad y multiempresa
 
@@ -46,10 +47,10 @@
 - [x] Módulo de hash de contraseña y verificación con PBKDF2.
 - [x] Diseño de rutas de API en español.
 - [~] Aislamiento de empresas diseñado en el esquema, pero no aplicado aún por un servidor.
-- [ ] Base de datos D1 creada y migraciones aplicadas.
-- [ ] Backend activo conectado a la base de datos.
-- [ ] Cookies de sesión seguras y control de permisos en servidor.
-- [ ] Contraseñas y sesiones usadas por el inicio de sesión real.
+- [x] Base de datos PostgreSQL 18 local `db_citas` creada con el esquema y las restricciones aplicadas.
+- [x] Backend local conectado a `db_citas` para reservas y panel; falta desplegarlo para la aplicación publicada.
+- [x] Cookies HttpOnly/SameSite y validación de sesión/permisos activas en el backend local.
+- [~] Contraseñas con PBKDF2 y sesiones persistidas en PostgreSQL usadas por la API local; falta conectarlas a la pantalla publicada.
 - [ ] Pruebas de seguridad: un comercio no puede leer ni editar datos de otro.
 
 ## Preparación para lanzamiento

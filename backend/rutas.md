@@ -1,6 +1,6 @@
 # Rutas del servidor
 
-Estas rutas se implementarán sobre el Worker del sitio. Todas responden JSON y
+Estas rutas se implementan primero en el servidor local de PostgreSQL. Todas responden JSON y
 usan nombres de dominio en español.
 
 | Método | Ruta | Acceso | Descripción |

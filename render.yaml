@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: agenda-multilocal-api-prueba
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm ci && npm run migrar
+    startCommand: npm run iniciar
+    healthCheckPath: /salud
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: db-citas-prueba
+          property: connectionString
+
+databases:
+  - name: db-citas-prueba
+    plan: free
+    databaseName: db_citas
+    user: agenda_multilocal

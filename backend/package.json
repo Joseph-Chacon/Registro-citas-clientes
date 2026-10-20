@@ -1,0 +1,7 @@
+{
+  "name": "agenda-multilocal-backend",
+  "private": true,
+  "type": "module",
+  "scripts": { "iniciar": "node servidor.mjs", "migrar": "node migrar.mjs" },
+  "dependencies": { "pg": "^8.13.1" }
+}
