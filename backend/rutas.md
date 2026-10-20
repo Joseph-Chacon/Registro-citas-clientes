@@ -11,7 +11,7 @@ usan nombres de dominio en español.
 | GET | /api/panel/empresas | Autenticado | Lista los negocios vinculados al usuario y marca el activo. |
 | PUT | /api/panel/empresa-activa | Autenticado | Cambia de negocio activo si el usuario pertenece a él. |
 | GET | /api/panel/empresa | Autenticado | Devuelve el negocio del usuario. |
-| PUT | /api/panel/empresa | Administrador | Actualiza información pública. |
+| PUT | /api/panel/empresa | Administrador | Actualiza información pública, incluida dirección y enlace de Maps. |
 | GET | /api/panel/servicios | Autenticado | Lista servicios de la empresa. |
 | POST | /api/panel/servicios | Administrador | Crea un servicio. |
 | GET | /api/publico/:empresa/servicios | Público | Lista el catálogo público. |

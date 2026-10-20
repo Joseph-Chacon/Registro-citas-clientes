@@ -5,6 +5,7 @@ export const empresas = sqliteTable("empresas", {
   nombre: text("nombre").notNull(),
   identificadorPublico: text("identificador_publico").notNull().unique(),
   ubicacion: text("ubicacion"),
+  urlMapa: text("url_mapa"),
   telefono: text("telefono"),
   zonaHoraria: text("zona_horaria").notNull().default("America/Costa_Rica"),
   activo: integer("activo", { mode: "boolean" }).notNull().default(true),
