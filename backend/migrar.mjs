@@ -21,7 +21,7 @@ try {
     nombre TEXT PRIMARY KEY,
     aplicado_en TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
   )`);
-  for (const nombre of ['0004_sesion_empresa_activa.sql', '0005_agregar_url_mapa.sql']) {
+  for (const nombre of ['0004_sesion_empresa_activa.sql', '0005_agregar_url_mapa.sql', '0006_invitaciones_registro.sql']) {
     const aplicada = await bd.query('SELECT 1 FROM migraciones_aplicadas WHERE nombre=$1', [nombre]);
     if (aplicada.rowCount) continue;
     const sql = await readFile(new URL(`../base_de_datos/${nombre}`, import.meta.url), 'utf8');

@@ -12,6 +12,8 @@ services:
         fromDatabase:
           name: db-citas-prueba
           property: connectionString
+      - key: CORREO_ADMINISTRADOR_PLATAFORMA
+        sync: false
 
 databases:
   - name: db-citas-prueba

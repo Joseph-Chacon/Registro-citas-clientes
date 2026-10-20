@@ -26,6 +26,7 @@ body{background:#ebe8e2;font-family:Arial,Helvetica,sans-serif}.app{max-width:62
 /* La ruta /reservar/:identificador selecciona el negocio público. */
 const coincidenciaReserva = location.pathname.match(/^\/reservar\/([a-z0-9-]{3,60})$/);
 const identificadorPublico = coincidenciaReserva ? coincidenciaReserva[1] : 'studio-lila';
+const tokenInvitacionRegistro = new URLSearchParams(location.hash.split('?')[1] || '').get('token') || '';
 const fetchOriginal = window.fetch.bind(window);
 window.fetch = (recurso, opciones) => {
   const url = typeof recurso === 'string' ? recurso : recurso.url;
@@ -61,7 +62,7 @@ window.cancelarCita=async function(id){try{await api('/api/panel/citas/'+id+'/ca
 window.enterPanel=async function(){let inputs=document.querySelectorAll('#login input'),correo=inputs[0].value.trim(),contrasena=inputs[1].value,b=document.querySelector('#login .primary'),aviso=document.querySelector('#login .hint');if(!correo||!contrasena){aviso.textContent='Escribe tu correo y contraseña.';return}b.disabled=true;b.textContent='Ingresando…';try{await api('/api/iniciar-sesion',{method:'POST',body:JSON.stringify({correo,contrasena})});location.hash='panel';window.showAdmin()}catch(e){aviso.textContent='No se pudo ingresar: '+e.message;toast(e.message)}finally{b.disabled=false;b.textContent='Ingresar al panel'}};
 window.showAdmin=function(){book.classList.add('hide');login.classList.add('hide');settings.classList.add('hide');admin.classList.remove('hide');adminNav.classList.remove('hide');nAdmin.classList.add('active');nBook.classList.remove('active');nSettings.classList.remove('active');window.renderAdmin();scrollTo(0,0)};
 window.selectMonthDay=d=>{cal.day=d;renderAdmin()};window.changeMonth=offset=>{cal.month+=offset;if(cal.month<0){cal.month=11;cal.year--}if(cal.month>11){cal.month=0;cal.year++}cal.day=1;renderAdmin()};
-window.crearAdminInicial=async function(){let nombre=prompt('Nombre del administrador:'),correo=prompt('Correo del administrador:'),contrasena=prompt('Crea una contraseña de al menos 10 caracteres, con letras y números:');if(!nombre||!correo||!contrasena)return;try{await api('/api/configuracion/crear-admin-inicial',{method:'POST',body:JSON.stringify({nombre,correo,contrasena})});toast('Acceso creado. Inicia sesión con tus datos.')}catch(e){toast(e.message)}};
+window.crearAdminInicial=function(){document.getElementById('abrirRegistroInicial')?.click()};
 let ocupadasRemotas=[];
 const fechaReserva=()=>`${bookingCal.year}-${String(bookingCal.month+1).padStart(2,'0')}-${String(bookingCal.day).padStart(2,'0')}`;
 async function cargarDisponibilidad(){if(!st.s)return;try{let d=await api('/api/publico/studio-lila/disponibilidad?fecha='+fechaReserva());ocupadasRemotas=d.ocupadas;window.renderTimes()}catch(e){toast('No se pudo actualizar la disponibilidad.')}}
@@ -229,5 +230,114 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
     await abrirConfiguracionAnterior();
     await mostrarEnlaceCompartible();
   };
+})();
+</script>
+<script>
+/* Registro inicial: crea negocio y propietario sin depender de datos de prueba. */
+(() => {
+  document.querySelector('#login button[onclick="crearAdminInicial()"]')?.remove();
+  const registro = document.createElement('section');
+  registro.id = 'registroInicial';
+  registro.className = 'card hide';
+  registro.style.cssText = 'margin-top:18px;text-align:left';
+  registro.innerHTML = `
+    <p class="eyebrow">Primer acceso</p>
+    <h2 style="margin:4px 0 14px">Crea tu negocio</h2>
+    <p class="muted" style="margin:0 0 16px">Crea el usuario propietario y el enlace público de reservas.</p>
+    <div class="field"><label for="registroNombre">Tu nombre</label><input id="registroNombre" autocomplete="name" placeholder="Ej. Ana Rodríguez"></div>
+    <div class="field"><label for="registroCorreo">Correo</label><input id="registroCorreo" type="email" autocomplete="email" placeholder="tu@negocio.com"></div>
+    <div class="field"><label for="registroEmpresa">Nombre del negocio</label><input id="registroEmpresa" placeholder="Ej. Salón Aurora"></div>
+    <div class="field"><label for="registroSlug">Enlace del negocio</label><input id="registroSlug" autocapitalize="none" placeholder="salon-aurora"><small class="muted">Solo minúsculas, números y guiones.</small></div>
+    <div class="field"><label for="registroContrasena">Contraseña</label><input id="registroContrasena" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></div>
+    <button class="primary" id="crearNegocio" type="button">Crear negocio e ingresar</button>
+    <p class="hint hide" id="mensajeRegistro" style="margin-top:12px"></p>`;
+  const abrirRegistro = document.createElement('button');
+  abrirRegistro.id = 'abrirRegistroInicial';
+  abrirRegistro.className = 'link';
+  abrirRegistro.type = 'button';
+  abrirRegistro.style.marginTop = '18px';
+  abrirRegistro.textContent = '¿Tienes una invitación? Crea tu negocio';
+  const tarjetaIngreso = document.querySelector('#login .card');
+  tarjetaIngreso?.after(abrirRegistro);
+  abrirRegistro.after(registro);
+  abrirRegistro.onclick = () => {
+    registro.classList.remove('hide');
+    abrirRegistro.classList.add('hide');
+    registro.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const mostrarError = texto => {
+    const mensaje = document.getElementById('mensajeRegistro');
+    mensaje.textContent = texto;
+    mensaje.classList.remove('hide');
+  };
+  document.getElementById('crearNegocio').onclick = async () => {
+    const nombre = document.getElementById('registroNombre').value.trim();
+    const correo = document.getElementById('registroCorreo').value.trim();
+    const empresa = document.getElementById('registroEmpresa').value.trim();
+    const identificador_publico = document.getElementById('registroSlug').value.trim().toLowerCase();
+    const contrasena = document.getElementById('registroContrasena').value;
+    if (!nombre || !correo || !empresa || !identificador_publico || !contrasena) return mostrarError('Completa todos los campos para crear tu acceso.');
+    const boton = document.getElementById('crearNegocio');
+    boton.disabled = true;
+    boton.textContent = 'Creando…';
+    try {
+      if (!tokenInvitacionRegistro) throw new Error('Este registro requiere una invitación personal de un solo uso.');
+      await api('/api/registro', { method: 'POST', body: JSON.stringify({ nombre, correo, empresa, identificador_publico, contrasena, token_invitacion: tokenInvitacionRegistro }) });
+      const accesoCorreo = document.querySelector('#login input[type="email"]');
+      const accesoContrasena = document.querySelector('#login input[type="password"]');
+      accesoCorreo.value = correo;
+      accesoContrasena.value = contrasena;
+      await window.enterPanel();
+    } catch (error) {
+      mostrarError(error.message);
+      boton.disabled = false;
+      boton.textContent = 'Crear negocio e ingresar';
+    }
+  };
+})();
+</script>
+<script>
+/* Solo el administrador de plataforma puede emitir invitaciones para nuevos locales. */
+(() => {
+  const mostrarGestionInvitaciones = async () => {
+    const estado = await api('/api/plataforma/estado');
+    document.getElementById('gestionInvitaciones')?.remove();
+    if (!estado.administrador_plataforma) return;
+    const bloque = document.createElement('section');
+    bloque.id = 'gestionInvitaciones';
+    bloque.className = 'card';
+    bloque.style.margin = '0 0 22px';
+    bloque.innerHTML = '<p class="eyebrow">Administrador de plataforma</p><h2 style="margin:4px 0 10px">Invitar un nuevo local</h2><p class="muted" style="margin:0 0 14px">Cada invitación vence en 7 días y solo puede usarse una vez.</p><button class="primary" id="generarInvitacion" type="button">Generar invitación</button><div id="resultadoInvitacion" class="hide" style="margin-top:14px"><div class="field"><label>Enlace privado para el manager</label><input id="enlaceInvitacion" readonly aria-label="Enlace de invitación"></div><button class="link" id="copiarInvitacion" type="button">Copiar enlace</button><p class="hint" id="avisoInvitacion" style="margin-top:12px"></p></div>';
+    document.querySelector('#settings h2')?.before(bloque);
+    document.getElementById('generarInvitacion').onclick = async () => {
+      const boton = document.getElementById('generarInvitacion');
+      boton.disabled = true;
+      boton.textContent = 'Generando…';
+      try {
+        const respuesta = await api('/api/plataforma/invitaciones', { method: 'POST', body: JSON.stringify({ dias_validez: 7 }) });
+        const enlace = `${location.origin}/#admin?token=${encodeURIComponent(respuesta.token)}`;
+        document.getElementById('enlaceInvitacion').value = enlace;
+        document.getElementById('resultadoInvitacion').classList.remove('hide');
+        document.getElementById('avisoInvitacion').textContent = 'Compártelo solo con el manager. Tras completar el registro, dejará de funcionar.';
+        document.getElementById('copiarInvitacion').onclick = async () => {
+          const campo = document.getElementById('enlaceInvitacion');
+          try { await navigator.clipboard.writeText(campo.value); } catch { campo.select(); document.execCommand('copy'); }
+          document.getElementById('avisoInvitacion').textContent = 'Enlace copiado. Se puede usar una sola vez.';
+        };
+      } catch (error) {
+        toast(error.message);
+      } finally {
+        boton.disabled = false;
+        boton.textContent = 'Generar invitación';
+      }
+    };
+  };
+  const abrirConfiguracionAnterior = window.showSettings;
+  window.showSettings = async function () {
+    await abrirConfiguracionAnterior();
+    try { await mostrarGestionInvitaciones(); } catch (error) { if (error.message !== 'Sesión no válida o vencida.') toast(error.message); }
+  };
+  if (location.hash.startsWith('#admin')) window.showLogin();
 })();
 </script></body></html>
