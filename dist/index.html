@@ -16,7 +16,7 @@ body:not(.catalogo-listo) #book{display:none!important}</style></head><body><div
 </main>
 <main id="login" class="view hide"><section class="success" style="padding-top:58px"><div class="check">✦</div><div class="eyebrow">Acceso privado</div><h1>Panel del negocio</h1><p class="muted" style="margin:0 auto 22px">Esta área es solo para el administrador del comercio.</p><div class="card" style="text-align:left"><div class="field"><label>Correo del administrador</label><input type="email" inputmode="email" placeholder="tu@negocio.com"></div><div class="field"><label>Contraseña</label><input type="password" placeholder="••••••••"></div><button class="primary" onclick="enterPanel()">Ingresar al panel</button></div><button class="link" onclick="goPublic()" style="margin-top:20px">← Volver a reservas</button><p class="hint" style="text-align:left">Acceso demostrativo: la autenticación real se conectará a la base de datos en la siguiente etapa.</p></section></main>
 <main id="admin" class="view hide"><div class="adminhead"><div><div class="eyebrow" id="adminBusinessName">Studio Lila</div><h1>Mi agenda</h1></div><button class="link" onclick="showBook()">Reservas</button></div><div class="metrics"><div><strong id="count">3</strong><small>Citas este mes</small></div><div><strong>₡41.000</strong><small>Ventas estimadas</small></div></div><div class="monthbar"><button onclick="changeMonth(-1)">‹</button><b id="monthTitle">Octubre 2026</b><button onclick="changeMonth(1)">›</button></div><div id="calendar" class="card calendar"></div><p class="agenda-title" id="agendaTitle">Lunes, 19 de octubre</p><div id="appointments" class="card agenda"></div><p class="hint">Consulta un rango completo de un mes y toca un día para ver sus citas.</p></main>
-<main id="settings" class="view hide"><div class="adminhead"><div><div class="eyebrow">Administración</div><h1>Mi negocio</h1></div><button class="link" onclick="showBook()">Reservas</button></div><h2>Información pública</h2><div class="card"><div class="field"><label>Nombre del negocio</label><input id="businessInput" placeholder="Ej. Studio Lila"></div><div class="field"><label>Ubicación o referencia</label><input id="locationInput" placeholder="Ej. Barrio Escalante"></div><button class="primary" onclick="saveBusiness()">Guardar cambios</button></div><h2>Horario de atención</h2><div class="card"><div class="field"><label>Abre a las</label><input id="openingInput" type="time"></div><div class="field"><label>Cierra a las</label><input id="closingInput" type="time"></div><div class="field"><label>Intervalo entre citas</label><input id="intervalInput" type="number" min="15" step="15" inputmode="numeric" placeholder="30"> <small class="muted">minutos</small></div><button class="primary" onclick="saveHours()">Guardar horario</button></div><p class="hint">Domingos cerrados. Las horas públicas se calculan según este horario, la duración del servicio y las citas ocupadas.</p><h2>Servicios</h2><div id="configServices"></div><div class="card" style="margin-top:12px"><div class="field"><label>Nuevo servicio</label><input id="newService" placeholder="Ej. Pedicure spa"></div><div class="field"><label>Precio en colones</label><input id="newPrice" inputmode="numeric" placeholder="Ej. 12000"></div><div class="field"><label>Duración en minutos</label><input id="newDuration" inputmode="numeric" placeholder="Ej. 60"></div><button class="primary" onclick="addService()">Agregar servicio</button></div><p class="hint">Los cambios se reflejan de inmediato en la página de reservas.</p></main>
+<main id="settings" class="view hide"><div class="adminhead"><div><div class="eyebrow">Administración</div><h1>Mi negocio</h1></div><button class="link" onclick="showBook()">Reservas</button></div><h2>Información pública</h2><div class="card"><div class="field"><label>Nombre del negocio</label><input id="businessInput" placeholder="Ej. Studio Lila"></div><div class="field"><label>Ubicación o referencia</label><input id="locationInput" placeholder="Ej. Barrio Escalante"></div><button type="button" class="link" style="padding:0 0 10px" onclick="abrirMaps()">⌖ Buscar ubicación en Google Maps</button><div class="field"><label>Enlace exacto de Maps <small class="muted">(opcional)</small></label><input id="mapUrlInput" type="url" placeholder="Pega aquí el enlace de Google Maps o Apple Maps"></div><p class="hint" style="margin:0 0 12px">Tus clientes podrán tocar “Cómo llegar” para abrir la ubicación en Maps.</p><button class="primary" onclick="saveBusiness()">Guardar cambios</button></div><h2>Horario de atención</h2><div class="card"><div class="field"><label>Abre a las</label><input id="openingInput" type="time"></div><div class="field"><label>Cierra a las</label><input id="closingInput" type="time"></div><div class="field"><label>Intervalo entre citas</label><input id="intervalInput" type="number" min="15" step="15" inputmode="numeric" placeholder="30"> <small class="muted">minutos</small></div><button class="primary" onclick="saveHours()">Guardar horario</button></div><p class="hint">Domingos cerrados. Las horas públicas se calculan según este horario, la duración del servicio y las citas ocupadas.</p><h2>Servicios</h2><div id="configServices"></div><div class="card" style="margin-top:12px"><div class="field"><label>Nuevo servicio</label><input id="newService" placeholder="Ej. Pedicure spa"></div><div class="field"><label>Precio en colones</label><input id="newPrice" inputmode="numeric" placeholder="Ej. 12000"></div><div class="field"><label>Duración en minutos</label><input id="newDuration" inputmode="numeric" placeholder="Ej. 60"></div><button class="primary" onclick="addService()">Agregar servicio</button></div><p class="hint">Los cambios se reflejan de inmediato en la página de reservas.</p></main>
 <nav id="adminNav" class="bottom hide"><button id="nBook" class="nav active" onclick="goPublic()"><span>◌</span>Ver reservas</button><button id="nAdmin" class="nav" onclick="showAdmin()"><span>▣</span>Mi agenda</button><button id="nSettings" class="nav" onclick="showSettings()"><span>⚙</span>Negocio</button></nav></div><div id="toast" class="toast hide"></div>
 <script>
 let sv=JSON.parse(localStorage.getItem('lilaServices')||'null')||[{id:'cut',i:'✂',n:'Corte y peinado',d:'60 min',p:18000},{id:'nails',i:'✦',n:'Manicure gel',d:'75 min',p:15000},{id:'brows',i:'◌',n:'Diseño de cejas',d:'30 min',p:8000}]; let business=JSON.parse(localStorage.getItem('lilaBusiness')||'null')||{name:'Studio Lila',location:'Barrio Escalante'}; let hours=JSON.parse(localStorage.getItem('lilaHorarios')||'null')||{open:'09:00',close:'16:00',interval:30}; const st={s:null,day:'Lun 19',time:null},base=[], cal={month:9,year:2026,day:19}, bookingCal={month:9,year:2026,day:19};
@@ -98,5 +98,46 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
   const cargar=async()=>{try{const d=await pedir('/api/panel/servicios');document.getElementById('configServices').innerHTML=d.servicios.map(s=>'<div class="service" style="opacity:'+(s.activo?'1':'.55')+'"><span class="service-icon">'+(s.activo?'✦':'—')+'</span><span><b>'+s.nombre+'</b><small>'+s.duracion_minutos+' min · ₡'+Number(s.precio_centavos).toLocaleString('es-CR')+(s.activo?'':' · Inactivo')+'</small></span><button class="link" type="button" data-servicio="'+s.id_servicio+'" data-activo="'+(!s.activo)+'">'+(s.activo?'Inactivar':'Activar')+'</button></div>').join('');document.querySelectorAll('[data-servicio]').forEach(b=>b.onclick=async()=>{const activar=b.dataset.activo==='true';if(!activar&&!window.confirm('¿Inactivar este servicio?'))return;try{await pedir('/api/panel/servicios/'+b.dataset.servicio,{method:'PATCH',body:JSON.stringify({activo:activar})});localStorage.removeItem('lilaServices');const publico=await pedir('/api/publico/studio-lila');sv=publico.servicios.map((s,i)=>({id:s.id_servicio,i:['✂','✦','◌'][i%3],n:s.nombre,d:s.duracion_minutos+' min',p:s.precio_centavos}));renderServices();await cargar();panel.querySelector('p').textContent=activar?'Servicio activado y cambios guardados.':'Servicio inactivado y cambios guardados.'}catch(e){panel.querySelector('p').textContent=e.message}})}catch(e){panel.querySelector('p').textContent='No se pudo cargar: '+e.message}};
   window.cargarServiciosGestion=cargar;
   nSettings.onclick=()=>{window.showSettings();cargar()};
+})();
+</script>
+<script>
+/* Ubicación del negocio: se conserva en la API y se ofrece como indicación para clientes. */
+(() => {
+  const urlParaDireccion = () => business.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.location || business.name)}`;
+  const pintarEnlaceMapa = () => {
+    document.getElementById('mapCustomerLink')?.remove();
+    if (!business.location) return;
+    const enlace = document.createElement('a');
+    enlace.id = 'mapCustomerLink';
+    enlace.href = urlParaDireccion();
+    enlace.target = '_blank';
+    enlace.rel = 'noopener noreferrer';
+    enlace.className = 'pin';
+    enlace.textContent = '⌖ Cómo llegar';
+    document.querySelector('#services .business')?.append(enlace);
+  };
+  const renderAnterior = window.renderBusiness;
+  window.renderBusiness = function () {
+    renderAnterior();
+    const input = document.getElementById('mapUrlInput');
+    if (input) input.value = business.mapUrl || '';
+    pintarEnlaceMapa();
+  };
+  window.abrirMaps = () => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationInput.value.trim() || business.location || 'Costa Rica')}`, '_blank', 'noopener,noreferrer');
+  const guardarUbicacion = async () => {
+    try {
+      const respuesta = await api('/api/panel/empresa', { method: 'PUT', body: JSON.stringify({ nombre: businessInput.value.trim(), ubicacion: locationInput.value.trim(), url_mapa: mapUrlInput.value.trim() }) });
+      business = { name: respuesta.empresa.nombre, location: respuesta.empresa.ubicacion || 'Ubicación por definir', mapUrl: respuesta.empresa.url_mapa || '' };
+      localStorage.removeItem('lilaBusiness');
+      window.renderBusiness();
+      toast('Ubicación guardada. Tus clientes ya pueden abrir Maps.');
+    } catch (error) { toast(error.message); }
+  };
+  document.querySelector('#settings .card .primary').onclick = guardarUbicacion;
+  window.saveBusiness = guardarUbicacion;
+  api('/api/publico/studio-lila').then(datos => {
+    business = { name: datos.empresa.nombre, location: datos.empresa.ubicacion || 'Ubicación por definir', mapUrl: datos.empresa.url_mapa || '' };
+    window.renderBusiness();
+  }).catch(() => {});
 })();
 </script></body></html>

@@ -6,6 +6,7 @@ CREATE TABLE empresas (
   nombre TEXT NOT NULL,
   identificador_publico TEXT NOT NULL UNIQUE,
   ubicacion TEXT,
+  url_mapa TEXT,
   telefono TEXT,
   zona_horaria TEXT NOT NULL DEFAULT 'America/Costa_Rica',
   intervalo_minutos INTEGER NOT NULL DEFAULT 30 CHECK (intervalo_minutos >= 15),
