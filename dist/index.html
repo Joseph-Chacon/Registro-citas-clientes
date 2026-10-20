@@ -90,7 +90,8 @@ window.alternarServicio=async function(idServicio,activar){if(!activar&&!confirm
 nSettings.onclick=()=>{window.showSettings();cargarServiciosGestion()};
 const sincronizarDiasVisibles=()=>{[...dates.querySelectorAll('.booking-day')].forEach(b=>{let d=Number(b.textContent),semana=new Date(bookingCal.year,bookingCal.month,d).getDay(),cerrado=!diasAtencion.has(semana);b.disabled=cerrado;b.classList.toggle('closed',cerrado)})};
 new MutationObserver(sincronizarDiasVisibles).observe(dates,{childList:true,subtree:true});
-cargarCatalogo();
+// Las rutas privadas no dependen de un negocio público de demostración.
+if (!location.hash.startsWith('#admin')) cargarCatalogo();
 </script>
 <script>
 if(location.hash==='#panel') window.showAdmin();
