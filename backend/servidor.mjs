@@ -51,7 +51,13 @@ const servidor = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://local'), ruta = url.pathname;
     const publica = ruta.match(/^\/api\/publico\/([a-z0-9-]+)$/), disponibilidad = ruta.match(/^\/api\/publico\/([a-z0-9-]+)\/disponibilidad$/), reserva = ruta.match(/^\/api\/publico\/([a-z0-9-]+)\/citas$/), servicio = ruta.match(/^\/api\/panel\/servicios\/([^/]+)$/), cita = ruta.match(/^\/api\/panel\/citas\/([^/]+)$/), cancelacion = ruta.match(/^\/api\/panel\/citas\/([^/]+)\/cancelar$/);
     if (req.method === 'GET' && ruta === '/salud') return responder(res, 200, { ok: true });
-    if (req.method === 'GET' && (ruta === '/' || ruta === '/index.html')) { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); return res.end(await readFile(new URL('../dist/index.html', import.meta.url))); }
+    // La aplicación pública es una SPA. También entregamos su HTML al abrir un
+    // enlace compartido directamente (o al recargarlo) en Render.
+    const reservaPublica = ruta.match(/^\/reservar\/([a-z0-9-]{3,60})$/);
+    if (req.method === 'GET' && (ruta === '/' || ruta === '/index.html' || reservaPublica)) {
+      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+      return res.end(await readFile(new URL('../dist/index.html', import.meta.url)));
+    }
     if (req.method === 'GET' && publica) return responder(res, 200, await catalogoPublico(publica[1]));
     if (req.method === 'GET' && disponibilidad) return responder(res, 200, await disponibilidadPublica(disponibilidad[1], url.searchParams.get('fecha') ?? ''));
     if (req.method === 'POST' && reserva) return responder(res, 201, await crearCitaPublica(reserva[1], await leerJson(req)));
@@ -76,5 +82,5 @@ const servidor = http.createServer(async (req, res) => {
 });
 
 prepararBaseDeDatos()
-  .then(() => servidor.listen(Number(process.env.PORT ?? process.env.PUERTO ?? 8787), '0.0.0.0', () => console.log(`Aplicación local activa en http://localhost:${process.env.PORT ?? process.env.PUERTO ?? 8787}`)))
+  .then(() => servidor.listen(Number(process.env.PORT ?? process.env.PUERTO ?? 8788), '0.0.0.0', () => console.log(`Aplicación local activa en http://localhost:${process.env.PORT ?? process.env.PUERTO ?? 8788}`)))
   .catch(error => { console.error('No se pudo preparar intervalo_minutos:', error.message); process.exitCode = 1; });

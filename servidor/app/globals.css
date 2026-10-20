@@ -19,38 +19,42 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Cambia este único valor para adaptar el color de acento a cada marca. */
+  --brand: #384b63;
+  --brand-strong: #29394e;
+  --brand-soft: #e9eef4;
+  --background: #f8f6f2;
+  --foreground: #292b2f;
   --card: #ffffff;
-  --card-foreground: #171717;
+  --card-foreground: #292b2f;
   --popover: #ffffff;
-  --popover-foreground: #171717;
-  --primary: #171717;
-  --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #171717;
+  --popover-foreground: #292b2f;
+  --primary: var(--brand);
+  --primary-foreground: #ffffff;
+  --secondary: #f1f0ed;
+  --secondary-foreground: #292b2f;
+  --muted: #f1f0ed;
+  --muted-foreground: #6e7176;
+  --accent: var(--brand-soft);
+  --accent-foreground: var(--brand-strong);
   --destructive: #e7000b;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #a1a1a1;
-  --chart-1: #f54900;
-  --chart-2: #009689;
-  --chart-3: #104e64;
-  --chart-4: #ffb900;
-  --chart-5: #fe9a00;
-  --radius: 0.625rem;
-  --sidebar: #fafafa;
-  --sidebar-foreground: #171717;
-  --sidebar-primary: #171717;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f5f5f5;
-  --sidebar-accent-foreground: #171717;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #a1a1a1;
+  --border: #deddd8;
+  --input: #d5d4d0;
+  --ring: var(--brand);
+  --chart-1: var(--brand);
+  --chart-2: #7c8d88;
+  --chart-3: #a69d8f;
+  --chart-4: #c4ad7d;
+  --chart-5: #938d86;
+  --radius: 0.5rem;
+  --sidebar: #f8f6f2;
+  --sidebar-foreground: #292b2f;
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f0ed;
+  --sidebar-accent-foreground: #292b2f;
+  --sidebar-border: #deddd8;
+  --sidebar-ring: var(--brand);
 }
 
 @theme inline {
@@ -92,42 +96,6 @@
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #171717;
-    --card-foreground: #ededed;
-    --popover: #171717;
-    --popover-foreground: #ededed;
-    --primary: #ededed;
-    --primary-foreground: #171717;
-    --secondary: #262626;
-    --secondary-foreground: #ededed;
-    --muted: #262626;
-    --muted-foreground: #a1a1a1;
-    --accent: #262626;
-    --accent-foreground: #ededed;
-    --destructive: #ff6467;
-    --border: #ffffff1a;
-    --input: #ffffff26;
-    --ring: #737373;
-    --chart-1: #8e51ff;
-    --chart-2: #00bc7d;
-    --chart-3: #fe9a00;
-    --chart-4: #ad46ff;
-    --chart-5: #ff2056;
-    --sidebar: #171717;
-    --sidebar-foreground: #ededed;
-    --sidebar-primary: #8e51ff;
-    --sidebar-primary-foreground: #ededed;
-    --sidebar-accent: #262626;
-    --sidebar-accent-foreground: #ededed;
-    --sidebar-border: #ffffff1a;
-    --sidebar-ring: #737373;
-  }
 }
 
 body {
