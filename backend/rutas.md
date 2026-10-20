@@ -8,6 +8,8 @@ usan nombres de dominio en español.
 | POST | /api/registro | Público | Crea empresa, usuario propietario y sesión. |
 | POST | /api/iniciar-sesion | Público | Verifica correo y contraseña; crea una sesión. |
 | POST | /api/cerrar-sesion | Autenticado | Invalida la sesión activa. |
+| GET | /api/panel/empresas | Autenticado | Lista los negocios vinculados al usuario y marca el activo. |
+| PUT | /api/panel/empresa-activa | Autenticado | Cambia de negocio activo si el usuario pertenece a él. |
 | GET | /api/panel/empresa | Autenticado | Devuelve el negocio del usuario. |
 | PUT | /api/panel/empresa | Administrador | Actualiza información pública. |
 | GET | /api/panel/servicios | Autenticado | Lista servicios de la empresa. |
@@ -23,3 +25,5 @@ usan nombres de dominio en español.
 3. La cookie de sesión será HttpOnly, Secure, SameSite=Lax y tendrá vencimiento.
 4. Antes de crear una cita, el servidor valida horario, servicio, recurso y
    ausencia de traslape de horarios.
+5. La empresa activa vive en la sesión; cada solicitud privada opera solamente
+   en esa empresa. El navegador no puede seleccionar una empresa ajena.

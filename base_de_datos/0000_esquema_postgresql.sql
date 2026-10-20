@@ -57,6 +57,7 @@ CREATE TABLE servicios (
 CREATE TABLE servicios_recursos (
   id_servicio TEXT NOT NULL REFERENCES servicios(id_servicio) ON DELETE CASCADE,
   id_recurso TEXT NOT NULL REFERENCES recursos_reservables(id_recurso) ON DELETE CASCADE,
+  id_empresa TEXT NOT NULL REFERENCES empresas(id_empresa) ON DELETE CASCADE,
   PRIMARY KEY (id_servicio, id_recurso)
 );
 
@@ -99,6 +100,7 @@ CREATE TABLE citas (
 CREATE TABLE sesiones (
   id_sesion TEXT PRIMARY KEY,
   id_usuario TEXT NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+  id_empresa_activa TEXT REFERENCES empresas(id_empresa) ON DELETE SET NULL,
   token_hash TEXT NOT NULL UNIQUE,
   vence_en TIMESTAMPTZ NOT NULL,
   creado_en TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -109,6 +111,35 @@ CREATE INDEX indice_clientes_empresa ON clientes(id_empresa, telefono);
 CREATE INDEX indice_citas_empresa_fecha ON citas(id_empresa, fecha_hora_inicio);
 CREATE INDEX indice_citas_recurso_fecha ON citas(id_recurso, fecha_hora_inicio);
 CREATE INDEX indice_sesiones_usuario ON sesiones(id_usuario, vence_en);
+CREATE INDEX indice_sesiones_empresa_activa ON sesiones(id_usuario, id_empresa_activa, vence_en);
+
+CREATE UNIQUE INDEX indice_clientes_empresa_id ON clientes(id_empresa, id_cliente);
+CREATE UNIQUE INDEX indice_servicios_empresa_id ON servicios(id_empresa, id_servicio);
+CREATE UNIQUE INDEX indice_recursos_empresa_id ON recursos_reservables(id_empresa, id_recurso);
+
+ALTER TABLE servicios_recursos
+  ADD CONSTRAINT servicios_recursos_servicio_misma_empresa
+    FOREIGN KEY (id_empresa, id_servicio)
+    REFERENCES servicios(id_empresa, id_servicio) ON DELETE CASCADE,
+  ADD CONSTRAINT servicios_recursos_recurso_misma_empresa
+    FOREIGN KEY (id_empresa, id_recurso)
+    REFERENCES recursos_reservables(id_empresa, id_recurso) ON DELETE CASCADE;
+
+ALTER TABLE horarios_atencion
+  ADD CONSTRAINT horarios_recurso_misma_empresa
+    FOREIGN KEY (id_empresa, id_recurso)
+    REFERENCES recursos_reservables(id_empresa, id_recurso) ON DELETE CASCADE;
+
+ALTER TABLE citas
+  ADD CONSTRAINT citas_cliente_misma_empresa
+    FOREIGN KEY (id_empresa, id_cliente)
+    REFERENCES clientes(id_empresa, id_cliente) ON DELETE RESTRICT,
+  ADD CONSTRAINT citas_servicio_misma_empresa
+    FOREIGN KEY (id_empresa, id_servicio)
+    REFERENCES servicios(id_empresa, id_servicio) ON DELETE RESTRICT,
+  ADD CONSTRAINT citas_recurso_misma_empresa
+    FOREIGN KEY (id_empresa, id_recurso)
+    REFERENCES recursos_reservables(id_empresa, id_recurso) ON DELETE SET NULL;
 
 CREATE OR REPLACE FUNCTION impedir_solapamiento_de_cita()
 RETURNS TRIGGER AS $$

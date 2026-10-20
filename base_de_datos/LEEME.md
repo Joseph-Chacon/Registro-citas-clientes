@@ -17,6 +17,11 @@ Todas las entidades operativas incluyen id_empresa, directa o indirectamente.
 Cada consulta del panel deberá filtrar por la empresa del usuario autenticado;
 ese filtro es obligatorio en el servidor, no en el navegador.
 
+La migración `0004_sesion_empresa_activa.sql` permite que un usuario trabaje
+en un negocio activo por sesión y añade restricciones para impedir relaciones
+entre entidades de empresas diferentes. La plataforma mantiene una sola base
+de datos compartida; no se crea una base por cliente.
+
 ## Próxima migración
 
 La migración `0001_impedir_solapamientos_de_citas.sql` protege el recurso y el
