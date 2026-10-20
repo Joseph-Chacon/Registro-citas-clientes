@@ -270,6 +270,7 @@ const estiloDisponibilidad=document.createElement('style');estiloDisponibilidad.
   if (tokenRegistroInicial) {
     abrirRegistro.textContent = 'Configurar mi cuenta de administrador';
     document.getElementById('descripcionRegistro').textContent = 'Este enlace privado crea la primera cuenta administradora de la plataforma.';
+    abrirRegistro.click();
   }
 
   const mostrarError = texto => {
