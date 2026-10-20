@@ -25,7 +25,7 @@
 - [x] Disponibilidad calculada desde el horario configurado del comercio, la duración del servicio y las citas locales existentes.
 - [x] Prevención de doble reserva conectada: la reserva pública usa PostgreSQL y el disparador rechaza horarios solapados.
 - [~] Almacenamiento permanente disponible en PostgreSQL; falta conectar la reserva y el panel para verlo desde otro dispositivo.
-- [ ] Enlace público único por empresa, por ejemplo: /studio-lila.
+- [ ] Enlace público único por empresa, por ejemplo: /reservar/nombre-del-negocio.
 
 ## Panel del comercio
 

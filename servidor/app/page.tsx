@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Check, ExternalLink, MapPin, Navigation, Save } from "lucide-react";
 
 type Empresa = { nombre: string; ubicacion: string; url_mapa: string; identificador_publico: string };
-const ejemplo: Empresa = { nombre: "Studio Lila", ubicacion: "Barrio Escalante, San José, Costa Rica", url_mapa: "", identificador_publico: "studio-lila" };
+const ejemplo: Empresa = { nombre: "Tu negocio", ubicacion: "", url_mapa: "", identificador_publico: "" };
 const urlDeMaps = (empresa: Empresa) => empresa.url_mapa || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(empresa.ubicacion)}`;
 
 export default function Home() {
