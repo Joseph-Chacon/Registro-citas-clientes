@@ -55,6 +55,8 @@
 
 ## Preparación para lanzamiento
 
+- [ ] Confirmación y recordatorios por WhatsApp: seguir [el plan de implementación](PLAN_WHATSAPP.md). Decisión del 22 de octubre de 2026: conexión directa con Meta y un número existente compartido por todas las tiendas y locales.
+
 - [x] Diseño móvil Playful Pastel.
 - [x] Publicación privada de demostración.
 - [ ] Página pública accesible para clientes externos sin cuenta de ChatGPT.
